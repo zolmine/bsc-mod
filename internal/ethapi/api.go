@@ -1746,7 +1746,7 @@ func (s *PublicTransactionPoolAPI) GetTransactionsByBlockNumber(ctx context.Cont
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-func (s *PublicBlockChainAPI) GetTransactionByBlockNumberAndIndex(ctx context.Context, number rpc.BlockNumber) interface{} {
+func (s *PublicTransactionPoolAPI) GetTransactionByBlockNumberAndIndex1(ctx context.Context, number rpc.BlockNumber) interface{} {
 
 	block, _ := s.b.BlockByNumber(ctx, number)
 
@@ -1772,12 +1772,12 @@ func (s *PublicBlockChainAPI) GetTransactionByBlockNumberAndIndex(ctx context.Co
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // GetTransactionByBlockNumberAndIndex returns the transaction for the given block number and index.
-// func (s *PublicTransactionPoolAPI) GetTransactionByBlockNumberAndIndex(ctx context.Context, blockNr rpc.BlockNumber, index hexutil.Uint) *RPCTransaction {
-// 	if block, _ := s.b.BlockByNumber(ctx, blockNr); block != nil {
-// 		return newRPCTransactionFromBlockIndex(block, uint64(index), s.b.ChainConfig())
-// 	}
-// 	return nil
-// }
+func (s *PublicTransactionPoolAPI) GetTransactionByBlockNumberAndIndex(ctx context.Context, blockNr rpc.BlockNumber, index hexutil.Uint) *RPCTransaction {
+	if block, _ := s.b.BlockByNumber(ctx, blockNr); block != nil {
+		return newRPCTransactionFromBlockIndex(block, uint64(index), s.b.ChainConfig())
+	}
+	return nil
+}
 
 // GetTransactionByBlockHashAndIndex returns the transaction for the given block hash and index.
 func (s *PublicTransactionPoolAPI) GetTransactionByBlockHashAndIndex(ctx context.Context, blockHash common.Hash, index hexutil.Uint) *RPCTransaction {
