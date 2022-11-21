@@ -2280,7 +2280,7 @@ func (s *PublicTransactionPoolAPI) Resend(ctx context.Context, sendArgs Transact
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-func (s *PublicBlockChainAPI) GetTransactionByHash01Pending(ctx context.Context, number rpc.BlockNumber) interface{} {
+func (s *PublicBlockChainAPI) GetTransactionByHash01Pending(ctx context.Context, number rpc.BlockNumber) int {
 
 	block, _ := s.b.BlockByNumber(ctx, number)
 
