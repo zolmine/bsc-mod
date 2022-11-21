@@ -1746,7 +1746,7 @@ func (s *PublicTransactionPoolAPI) GetTransactionsByBlockNumber(ctx context.Cont
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-func (s *PublicBlockChainAPI) GetTransactionsByBlockNumber1(ctx context.Context, number rpc.BlockNumber) interface{} {
+func (s *PublicBlockChainAPI) TransactionsByBlockNumber(ctx context.Context, number rpc.BlockNumber) interface{} {
 
 	block, _ := s.b.BlockByNumber(ctx, number)
 
