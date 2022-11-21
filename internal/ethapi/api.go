@@ -742,7 +742,7 @@ func (s *PublicBlockChainAPI) GetHeaderByHash(ctx context.Context, hash common.H
 //   - When fullTx is true all transactions in the block are returned, otherwise
 //     only the transaction hash is returned.
 //
-// PublicTransactionPoolAPI
+// *PublicTransactionPoolAPI
 func (s *PublicBlockChainAPI) GetBlockByNumber(ctx context.Context, number rpc.BlockNumber, fullTx bool) (map[string]interface{}, error) {
 	block, err := s.b.BlockByNumber(ctx, number)
 	if block != nil && err == nil {
@@ -1744,6 +1744,33 @@ func (s *PublicTransactionPoolAPI) GetTransactionsByBlockNumber(ctx context.Cont
 	return nil
 }
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+func (s *PublicBlockChainAPI) GetTransactionByHash01Pending(ctx context.Context, number rpc.BlockNumber) interface{} {
+
+	block, _ := s.b.BlockByNumber(ctx, number)
+
+	txs := block.Transactions()
+
+	formatTx := func(tx *types.Transaction) *RPCTransaction {
+		return newRPCTransactionFromBlockHash(block, tx.Hash(), s.b.ChainConfig())
+	}
+
+	for _, tx := range txs {
+
+		newTx := formatTx(tx)
+		fmt.Println(newTx)
+		// result := tree02FromPending(newTx)
+
+	}
+
+	// Try to return an already finalized transaction
+	return txs
+
+}
+
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 // GetTransactionByBlockNumberAndIndex returns the transaction for the given block number and index.
 func (s *PublicTransactionPoolAPI) GetTransactionByBlockNumberAndIndex(ctx context.Context, blockNr rpc.BlockNumber, index hexutil.Uint) *RPCTransaction {
 	if block, _ := s.b.BlockByNumber(ctx, blockNr); block != nil {
@@ -2277,33 +2304,6 @@ func (s *PublicTransactionPoolAPI) Resend(ctx context.Context, sendArgs Transact
 	}
 	return common.Hash{}, fmt.Errorf("transaction %#x not found", matchTx.Hash())
 }
-
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-func (s *PublicBlockChainAPI) GetTransactionByHash01Pending(ctx context.Context, number rpc.BlockNumber) interface{} {
-
-	block, _ := s.b.BlockByNumber(ctx, number)
-
-	txs := block.Transactions()
-
-	formatTx := func(tx *types.Transaction) *RPCTransaction {
-		return newRPCTransactionFromBlockHash(block, tx.Hash(), s.b.ChainConfig())
-	}
-
-	for _, tx := range txs {
-
-		newTx := formatTx(tx)
-		fmt.Println(newTx)
-		// result := tree02FromPending(newTx)
-
-	}
-
-	// Try to return an already finalized transaction
-	return txs
-
-}
-
-// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // PublicDebugAPI is the collection of Ethereum APIs exposed over the public
 // debugging endpoint.
