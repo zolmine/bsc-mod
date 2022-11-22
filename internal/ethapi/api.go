@@ -745,6 +745,7 @@ func (s *PublicBlockChainAPI) GetHeaderByHash(ctx context.Context, hash common.H
 // *PublicTransactionPoolAPI
 func (s *PublicBlockChainAPI) GetBlockByNumber(ctx context.Context, number rpc.BlockNumber, fullTx bool) (map[string]interface{}, error) {
 	block, err := s.b.BlockByNumber(ctx, number)
+	fmt.Println("helooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
 	if block != nil && err == nil {
 		response, err := s.rpcMarshalBlock(ctx, block, true, fullTx)
 		if err == nil && number == rpc.PendingBlockNumber {
