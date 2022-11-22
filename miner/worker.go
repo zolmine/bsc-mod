@@ -355,6 +355,15 @@ func (w *worker) pending() (*types.Block, *state.StateDB) {
 	}
 	return w.snapshotBlock, w.snapshotState.Copy()
 }
+func (w *worker) Pending() (*types.Block, *state.StateDB) {
+	// return a snapshot to avoid contention on currentMu mutex
+	w.snapshotMu.RLock()
+	defer w.snapshotMu.RUnlock()
+	if w.snapshotState == nil {
+		return nil, nil
+	}
+	return w.snapshotBlock, w.snapshotState.Copy()
+}
 
 // pendingBlock returns pending block.
 func (w *worker) pendingBlock() *types.Block {
