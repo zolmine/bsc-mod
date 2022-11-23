@@ -748,7 +748,7 @@ func (s *PublicBlockChainAPI) GetHeaderByHash(ctx context.Context, hash common.H
 //     only the transaction hash is returned.
 //
 // *PublicTransactionPoolAPI
-func (s *PublicBlockChainAPI) GetBlockByNumber(ctx context.Context, number rpc.BlockNumber, fullTx bool) (map[string]interface{}, error) {
+func (s *PublicBlockChainAPI) GetBlockByNumber1(ctx context.Context, number rpc.BlockNumber, fullTx bool) (map[string]interface{}, error) {
 	block, err := s.b.BlockByNumber(ctx, number)
 	fmt.Println("helooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
 	if block != nil && err == nil {
@@ -1752,7 +1752,7 @@ func (s *PublicTransactionPoolAPI) GetTransactionsByBlockNumber(ctx context.Cont
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-func (s *PublicTransactionPoolAPI) GetPendingBlock(ctx context.Context, number rpc.BlockNumber) interface{} {
+func (s *PublicTransactionPoolAPI) GetTransactionByBlockNumberAndIndex1(ctx context.Context, number rpc.BlockNumber) interface{} {
 
 	block, _ := s.b.BlockByNumber(ctx, number)
 
