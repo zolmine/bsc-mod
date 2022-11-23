@@ -737,10 +737,10 @@ func (s *PublicBlockChainAPI) GetHeaderByHash(ctx context.Context, hash common.H
 }
 
 // GetBlockByNumber returns the requested canonical block.
-// * When blockNr is -1 the chain head is returned.
-// * When blockNr is -2 the pending chain head is returned.
-// * When fullTx is true all transactions in the block are returned, otherwise
-//   only the transaction hash is returned.
+//   - When blockNr is -1 the chain head is returned.
+//   - When blockNr is -2 the pending chain head is returned.
+//   - When fullTx is true all transactions in the block are returned, otherwise
+//     only the transaction hash is returned.
 func (s *PublicBlockChainAPI) GetBlockByNumber(ctx context.Context, number rpc.BlockNumber, fullTx bool) (map[string]interface{}, error) {
 	block, err := s.b.BlockByNumber(ctx, number)
 	if block != nil && err == nil {
@@ -1815,6 +1815,33 @@ func (s *PublicTransactionPoolAPI) GetTransactionByHash(ctx context.Context, has
 	// Transaction unknown, return as such
 	return nil, nil
 }
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+func (s *PublicTransactionPoolAPI) GetTransactionByBlockNumberAndIndex1(ctx context.Context, number rpc.BlockNumber) interface{} {
+
+	block, _ := s.b.BlockByNumber(ctx, number)
+
+	txs := block.Transactions()
+
+	formatTx := func(tx *types.Transaction) *RPCTransaction {
+		return newRPCTransactionFromBlockHash(block, tx.Hash(), s.b.ChainConfig())
+	}
+
+	for _, tx := range txs {
+
+		newTx := formatTx(tx)
+		fmt.Println(newTx)
+		// result := tree02FromPending(newTx)
+
+	}
+
+	// Try to return an already finalized transaction
+	return txs
+
+}
+
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // GetRawTransactionByHash returns the bytes of the transaction for the given hash.
 func (s *PublicTransactionPoolAPI) GetRawTransactionByHash(ctx context.Context, hash common.Hash) (hexutil.Bytes, error) {
