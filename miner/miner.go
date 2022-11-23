@@ -189,27 +189,23 @@ func (miner *Miner) SetRecommitInterval(interval time.Duration) {
 }
 
 // Pending returns the currently pending block and associated state.
-// func (miner *Miner) Pending() (*types.Block, *state.StateDB) {
-// 	if miner.worker.isRunning() {
-// 		pendingBlock, pendingState := miner.worker.pending()
-// 		if pendingState != nil && pendingBlock != nil {
-// 			return pendingBlock, pendingState
-// 		}
-// 	}
-// 	// fallback to latest block
-// 	block := miner.worker.chain.CurrentBlock()
-// 	if block == nil {
-// 		return nil, nil
-// 	}
-// 	stateDb, err := miner.worker.chain.StateAt(block.Root())
-// 	if err != nil {
-// 		return nil, nil
-// 	}
-// 	return block, stateDb
-// }
-
 func (miner *Miner) Pending() (*types.Block, *state.StateDB) {
-	return miner.worker.pending()
+	if miner.worker.isRunning() {
+		pendingBlock, pendingState := miner.worker.pending()
+		if pendingState != nil && pendingBlock != nil {
+			return pendingBlock, pendingState
+		}
+	}
+	// fallback to latest block
+	block := miner.worker.chain.CurrentBlock()
+	if block == nil {
+		return nil, nil
+	}
+	stateDb, err := miner.worker.chain.StateAt(block.Root())
+	if err != nil {
+		return nil, nil
+	}
+	return block, stateDb
 }
 
 // PendingBlock returns the currently pending block.
@@ -217,19 +213,15 @@ func (miner *Miner) Pending() (*types.Block, *state.StateDB) {
 // Note, to access both the pending block and the pending state
 // simultaneously, please use Pending(), as the pending state can
 // change between multiple method calls
-// func (miner *Miner) PendingBlock() *types.Block {
-// 	if miner.worker.isRunning() {
-// 		pendingBlock := miner.worker.pendingBlock()
-// 		if pendingBlock != nil {
-// 			return pendingBlock
-// 		}
-// 	}
-// 	// fallback to latest block
-// 	return miner.worker.chain.CurrentBlock()
-// }
-
 func (miner *Miner) PendingBlock() *types.Block {
-	return miner.worker.pendingBlock()
+	if miner.worker.isRunning() {
+		pendingBlock := miner.worker.pendingBlock()
+		if pendingBlock != nil {
+			return pendingBlock
+		}
+	}
+	// fallback to latest block
+	return miner.worker.chain.CurrentBlock()
 }
 
 // PendingBlockAndReceipts returns the currently pending block and corresponding receipts.
