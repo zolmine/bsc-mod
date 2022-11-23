@@ -45,7 +45,6 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/eth/tracers/logger"
 	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/miner"
 	"github.com/ethereum/go-ethereum/p2p"
 	"github.com/ethereum/go-ethereum/params"
 	"github.com/ethereum/go-ethereum/rlp"
@@ -54,10 +53,6 @@ import (
 )
 
 const UnHealthyTimeout = 5 * time.Second
-
-type Ethereum struct {
-	mminer *miner.Miner
-}
 
 // PublicEthereumAPI provides an API to access Ethereum related information.
 // It offers only methods that operate on public data that is freely available to anyone.
@@ -742,15 +737,12 @@ func (s *PublicBlockChainAPI) GetHeaderByHash(ctx context.Context, hash common.H
 }
 
 // GetBlockByNumber returns the requested canonical block.
-//   - When blockNr is -1 the chain head is returned.
-//   - When blockNr is -2 the pending chain head is returned.
-//   - When fullTx is true all transactions in the block are returned, otherwise
-//     only the transaction hash is returned.
-//
-// *PublicTransactionPoolAPI
-func (s *PublicBlockChainAPI) GetBlockByNumber1(ctx context.Context, number rpc.BlockNumber, fullTx bool) (map[string]interface{}, error) {
+// * When blockNr is -1 the chain head is returned.
+// * When blockNr is -2 the pending chain head is returned.
+// * When fullTx is true all transactions in the block are returned, otherwise
+//   only the transaction hash is returned.
+func (s *PublicBlockChainAPI) GetBlockByNumber(ctx context.Context, number rpc.BlockNumber, fullTx bool) (map[string]interface{}, error) {
 	block, err := s.b.BlockByNumber(ctx, number)
-	fmt.Println("helooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
 	if block != nil && err == nil {
 		response, err := s.rpcMarshalBlock(ctx, block, true, fullTx)
 		if err == nil && number == rpc.PendingBlockNumber {
@@ -1749,33 +1741,6 @@ func (s *PublicTransactionPoolAPI) GetTransactionsByBlockNumber(ctx context.Cont
 	}
 	return nil
 }
-
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-func (s *PublicTransactionPoolAPI) GetTransactionByBlockNumberAndIndex1(ctx context.Context, number rpc.BlockNumber) interface{} {
-
-	block, _ := s.b.BlockByNumber(ctx, number)
-
-	txs := block.Transactions()
-
-	formatTx := func(tx *types.Transaction) *RPCTransaction {
-		return newRPCTransactionFromBlockHash(block, tx.Hash(), s.b.ChainConfig())
-	}
-
-	for _, tx := range txs {
-
-		newTx := formatTx(tx)
-		fmt.Println(newTx)
-		// result := tree02FromPending(newTx)
-
-	}
-
-	// Try to return an already finalized transaction
-	return txs
-
-}
-
-// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // GetTransactionByBlockNumberAndIndex returns the transaction for the given block number and index.
 func (s *PublicTransactionPoolAPI) GetTransactionByBlockNumberAndIndex(ctx context.Context, blockNr rpc.BlockNumber, index hexutil.Uint) *RPCTransaction {
